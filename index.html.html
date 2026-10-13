@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>東港海事｜皮克敏共融性格小測驗</title>
+<style>
+:root{--green:#2f7548;--pale:#f2f8ef;--ink:#26352b;--line:#d7e6d5}
+*{box-sizing:border-box}
+body{margin:0;padding:18px;background:linear-gradient(135deg,#f3f8ef,#fff8ed);font-family:system-ui,"Microsoft JhengHei",sans-serif;color:var(--ink);line-height:1.65}
+main{max-width:720px;margin:auto;background:#fff;border:1px solid var(--line);border-radius:22px;padding:clamp(18px,4vw,32px);box-shadow:0 8px 30px #254b2714}
+header{text-align:center}
+h1{font-size:clamp(1.45rem,4vw,2rem);color:var(--green);margin:0}
+.subtitle{margin:.25rem 0 1rem;color:#526658}
+.notice{background:#fff8df;border-left:5px solid #e6b94d;border-radius:10px;padding:12px 14px;font-size:.95rem}
+.progress-wrap{margin:20px 0 10px}
+.progress-label{display:flex;justify-content:space-between;font-size:.9rem;color:#526658}
+progress{width:100%;height:12px;accent-color:var(--green)}
+.question{font-size:1.15rem;font-weight:750;margin:18px 0 12px}
+.options{display:grid;gap:10px}
+.option-btn,.action-btn{font:inherit;cursor:pointer;border-radius:12px;padding:13px 15px;border:2px solid #c9dfc8;background:#f4faf2;text-align:left;color:var(--ink);width:100%;transition:.15s}
+.option-btn:hover,.option-btn:focus-visible{border-color:var(--green);background:#e8f4e5;outline:3px solid #d5ead0}
+.action-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.action-btn{width:auto;text-align:center;background:var(--green);color:#fff;border-color:var(--green);font-weight:700}
+.action-btn.secondary{background:#fff;color:var(--green)}
+.hidden{display:none!important}
+.result{margin-top:18px}
+.result-title{font-size:1.55rem;color:var(--green);font-weight:800;text-align:center;margin:12px 0}
+.pill{display:inline-block;background:#eaf5e7;border-radius:999px;padding:4px 12px;color:var(--green);font-weight:700}
+.result-card{background:#f7faf5;border:1px solid var(--line);border-radius:15px;padding:16px;margin:12px 0}
+.result-card h3{margin:0 0 6px;font-size:1rem;color:#315f3c}
+.small{font-size:.92rem;color:#536257}
+footer{border-top:1px solid var(--line);margin-top:22px;padding-top:15px;font-size:.9rem;color:#526658}
+button:focus-visible{outline:3px solid #e4b949;outline-offset:2px}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<main>
+<header>
+<h1>🎄 尋找你的聖誕答案</h1>
+<div class="subtitle">東港海事｜你是哪種皮克敏？共融性格小測驗</div>
+</header>
+<div class="notice"><strong>先看這裡：</strong>這是一份趣味自我探索活動，不是心理測驗或診斷，也沒有好壞排名。每個人都可能有多種特質；結果只提供一個認識自己的角度。你可以選擇不分享結果。</div>
+
+<section id="quiz-screen" aria-live="polite">
+<div class="progress-wrap">
+<div class="progress-label"><span id="progress-text">第 1 題，共 6 題</span><span id="progress-percent">17%</span></div>
+<progress id="progress" value="1" max="6" aria-label="測驗進度"></progress>
+</div>
+<div id="question-text" class="question" tabindex="-1"></div>
+<div id="options-container" class="options"></div>
+<div class="action-row">
+<button id="back-btn" class="action-btn secondary hidden" type="button">← 上一題</button>
+<button id="restart-quiz-btn" class="action-btn secondary" type="button">重新開始</button>
+</div>
+</section>
+
+<section id="result-screen" class="result hidden" aria-live="polite">
+<div style="text-align:center"><span class="pill">你的皮克敏風格卡</span></div>
+<div id="result-type" class="result-title"></div>
+<div id="result-desc"></div>
+<div class="result-card"><h3>💚 共融小任務</h3><p id="inclusion-tip" style="margin:0"></p></div>
+<p class="small">提醒：結果不是固定人格，也不代表你或他人的能力。每個人會依情境展現不同特質；請以尊重、詢問和合作代替猜測與貼標籤。</p>
+<div class="action-row">
+<button class="action-btn" id="again-btn" type="button">再玩一次</button>
+<button class="action-btn secondary" id="print-btn" type="button">列印／儲存結果</button>
+</div>
+</section>
+<footer><strong>輔導室暖心叮嚀</strong><br>在東港海事，每個人都有屬於自己的顏色與步調。當我們學會互相理解與尊重，就能一起開創最棒的校園時光！</footer>
+</main>
+<script>
+const types = {
+ RED:{name:"🔴 熱情行動派｜赤色皮克敏",strength:"你可能喜歡先試試看、主動開啟行動，也願意為團隊注入勇氣。",tip:"行動前先確認大家是否準備好了；也留一點時間聽聽不同步調的夥伴。"},
+ YELLOW:{name:"🟡 好奇探索派｜黃色皮克敏",strength:"你可能充滿好奇、喜歡發現線索，也常帶來新點子。",tip:"把你的發現說出來，也邀請安靜的夥伴用說話、寫字或指認等方式分享想法。"},
+ BLUE:{name:"🔵 穩定支持派｜藍色皮克敏",strength:"你可能沉著細心，擅長觀察狀況、整理資訊或穩定團隊。",tip:"協助他人前先問一句「你希望我怎麼幫忙？」尊重對方的選擇與自主。"},
+ PURPLE:{name:"🟣 耐心合作派｜紫色皮克敏",strength:"你可能重視可靠與合作，願意陪團隊一步步完成任務。",tip:"每個人的速度和方式都不同；保留足夠時間，讓大家都能參與和表達。"},
+ WHITE:{name:"⚪ 細膩觀察派｜白色皮克敏",strength:"你可能留意細節、環境變化或他人的感受。",tip:"有些環境可能讓人感到吵雜、刺眼或不自在。一起確認需求，提供安靜空間或清楚指示。"},
+ WINGED:{name:"💗 創意連結派｜羽翅皮克敏",strength:"你可能喜歡從不同角度思考，運用圖像、想像或新方法解決問題。",tip:"任務不只有一種完成方式；善用圖像、文字、口語或輔助工具，讓不同表達方式都被接納。"},
+ ROCK:{name:"⚫ 堅定解題派｜岩石皮克敏",strength:"你可能遇到困難時願意堅持，也能幫團隊穩住方向。",tip:"堅持之外也可以彈性調整策略；遇到障礙時一起找替代路線或不同解法。"},
+ ICE:{name:"🩵 冷靜調整派｜冰凍皮克敏",strength:"你可能擅長停下來整理思緒、重新評估情況，再選擇下一步。",tip:"改變或新環境可能需要適應時間。先說明流程、提供選擇與休息機會，讓大家安心參與。"},
+ PURPLE_FLOWER:{name:"🌸 溫暖連結派｜花朵皮克敏",strength:"你可能重視人與人之間的連結，願意鼓勵夥伴、營造友善氣氛。",tip:"關心別人時，也要尊重對方是否想談、是否需要協助；接納不一樣的表達方式。"}
+};
+const questions = [
+{q:"1. 拿到聖誕定向地圖時，你通常會怎麼開始？",options:[
+["A. 先挑一個目標，試著出發看看。",{RED:2,ROCK:1}],
+["B. 先看清楚線索與路線，再決定順序。",{BLUE:2,ICE:1}],
+["C. 觀察周遭，看看有沒有有趣的新發現。",{YELLOW:2,WINGED:1}],
+["D. 先確認環境和規則，讓自己準備好再開始。",{WHITE:1,ICE:2}]
+]},
+{q:"2. 小組合作時，你比較常帶來什麼？",options:[
+["A. 勇氣和行動，帶大家開始嘗試。",{RED:2,ROCK:1}],
+["B. 細心整理線索，提醒大家注意細節。",{BLUE:1,WHITE:2}],
+["C. 新點子，想到不同的解決方法。",{YELLOW:1,WINGED:2}],
+["D. 鼓勵與陪伴，讓每個人都能加入。",{PURPLE:1,PURPLE_FLOWER:2}]
+]},
+{q:"3. 任務一時解不出來時，你會怎麼做？",options:[
+["A. 換個方法再試一次，不輕易放棄。",{ROCK:2,RED:1}],
+["B. 暫停一下，重新整理已知線索。",{BLUE:1,ICE:2}],
+["C. 找不同角度，提出新點子。",{WINGED:2,YELLOW:1}],
+["D. 邀請夥伴一起討論，聽聽不同想法。",{PURPLE:1,PURPLE_FLOWER:2}]
+]},
+{q:"4. 如果同學需要較多時間理解活動規則，你會怎麼做？",options:[
+["A. 放慢步調，陪他一起看步驟。",{PURPLE:2,BLUE:1}],
+["B. 用圖示、示範或簡單句子重新說明。",{WINGED:2,YELLOW:1}],
+["C. 先問他需要什麼協助，再一起想方法。",{PURPLE_FLOWER:2,WHITE:1}],
+["D. 確認大家都懂規則後再開始，不催促。",{ICE:2,BLUE:1}]
+]},
+{q:"5. 如果活動現場太吵、路線不方便，或有人不太自在，怎麼做較好？",options:[
+["A. 詢問當事人想怎麼調整，不擅自替他決定。",{WHITE:2,PURPLE_FLOWER:1}],
+["B. 一起找安靜的地方、替代路線或休息點。",{ICE:2,BLUE:1}],
+["C. 和團隊討論其他完成任務的方法。",{WINGED:1,ROCK:2}],
+["D. 主動確認每個人都有參與機會，不把人留下。",{PURPLE_FLOWER:2,PURPLE:1}]
+]},
+{q:"6. 你最想送給自己和同學哪一句聖誕祝福？",options:[
+["A. 勇敢嘗試，每一步都值得肯定。",{RED:2,ROCK:1}],
+["B. 保持好奇，讓新想法被看見。",{YELLOW:2,WINGED:1}],
+["C. 尊重彼此的步調，願意等待和合作。",{PURPLE:2,ICE:1}],
+["D. 互相理解、主動詢問，讓每個人都安心參與。",{PURPLE_FLOWER:2,WHITE:1}]
+]}
+];
+let currentQ=0, answers=[], scores={};
+const $=id=>document.getElementById(id);
+function renderQuestion(){
+ const q=questions[currentQ];
+ $("question-text").textContent=q.q;
+ $("progress-text").textContent=`第 ${currentQ+1} 題，共 ${questions.length} 題`;
+ $("progress-percent").textContent=`${Math.round((currentQ+1)/questions.length*100)}%`;
+ $("progress").value=currentQ+1;
+ $("back-btn").classList.toggle("hidden",currentQ===0);
+ const box=$("options-container");box.innerHTML="";
+ q.options.forEach((opt,i)=>{
+  const b=document.createElement("button");b.type="button";b.className="option-btn";
+  b.textContent=opt[0];b.addEventListener("click",()=>choose(i));box.appendChild(b);
+ });
+ $("question-text").focus({preventScroll:true});
+}
+function choose(index){
+ answers[currentQ]=index;
+ if(currentQ<questions.length-1){currentQ++;renderQuestion()}else showResult();
+}
+function calculate(){
+ scores={};Object.keys(types).forEach(k=>scores[k]=0);
+ answers.forEach((answer,qi)=>{const sc=questions[qi].options[answer][1];Object.entries(sc).forEach(([k,v])=>scores[k]=(scores[k]||0)+v)});
+ const max=Math.max(...Object.values(scores));
+ const tied=Object.keys(scores).filter(k=>scores[k]===max);
+ return types[tied[Math.floor(Math.random()*tied.length)]];
+}
+function showResult(){
+ $("quiz-screen").classList.add("hidden");$("result-screen").classList.remove("hidden");
+ const result=calculate();
+ $("result-type").textContent=result.name;
+ $("result-desc").innerHTML="";
+ const card=document.createElement("div");card.className="result-card";
+ const h=document.createElement("h3");h.textContent="✨ 你的特質亮點";
+ const p=document.createElement("p");p.textContent=result.strength;
+ card.append(h,p);$("result-desc").append(card);
+ $("inclusion-tip").textContent=result.tip;
+ $("result-screen").scrollIntoView({behavior:"smooth",block:"start"});
+}
+function resetQuiz(){currentQ=0;answers=[];$("result-screen").classList.add("hidden");$("quiz-screen").classList.remove("hidden");renderQuestion();window.scrollTo({top:0,behavior:"smooth"})}
+$("back-btn").addEventListener("click",()=>{if(currentQ>0){currentQ--;renderQuestion()}});
+$("restart-quiz-btn").addEventListener("click",resetQuiz);
+$("again-btn").addEventListener("click",resetQuiz);
+$("print-btn").addEventListener("click",()=>window.print());
+renderQuestion();
+</script>
+</body>
+</html>
